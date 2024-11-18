@@ -8,7 +8,7 @@ use App\Http\Requests\BaseRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryRequest extends BaseRequest
+class SlideRequest extends BaseRequest
 {
     /**
      * 表单验证规则
@@ -18,10 +18,10 @@ class CategoryRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:16|unique:categories',
-            'pid' => 'integer',
+            'title' => 'required',
+            'img' => 'required',
             'status' => 'integer|in:0,1',
-            'level' => 'integer',
+            'url' => 'string',
         ];
     }
 
@@ -33,10 +33,11 @@ class CategoryRequest extends BaseRequest
     public function messages(): array
     {
         return [
-            'name.required' => '名称是必填项。',
-            'name.max' => '密码长度不能超过16个字符。',
-            'name.unique' => '该分类已经被创建。',
-            'status.in' => '状态码只包含(0,1)'
+            'title.required' => '名称是必填项。',
+            'img.required' => '图片地址是必填项。',
+            'status.integer' => '状态码只包含(0,1)',
+            'status.in' => '状态码只包含(0,1)',
+            'url.string' => '图片地址必须是字符串。'
         ];
     }
     /**
@@ -47,9 +48,7 @@ class CategoryRequest extends BaseRequest
      */
     public function failedValidation(Validator $validator)
     {
-        $errorCodes = [
-            'name.unique' => CodeController::CLIENT_ERROR_CONFLICT,
-        ];
+        $errorCodes = [];
         throw new CustomValidationException($validator, $errorCodes, $this->messages());
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 class MsgController extends Controller
 {
+    public const DATA_NOT_EXIST = '查询数据不存在。';
     // 验证相关
     public const ID_MUST_DELIVERY = '主键ID为必传参数';
     // 登录相关
@@ -67,4 +68,10 @@ class MsgController extends Controller
     // 评论相关
     public const COMMENT_QUERY_SUCCESS = '商品评论查询成功';
     public const COMMENT_UPDATE_SUCCESS = '商品评论更新成功';
+
+    // 轮播图
+    public const SLIDE_CREATED = '轮播图创建成功。';
+    public const SLIDE_QUERY_SUCCESS = '轮播图查询成功。';
+    public const SLIDE_UPDATE_SUCCESS = '轮播图更新成功。';
+    public const SLIDE_DELETED_SUCCESS = '轮播图已删除。';
 }

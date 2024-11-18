@@ -31,4 +31,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['api.auth', 'bindings']], fu
     Route::get('orders', [\App\Http\Controllers\Admin\OrderController::class, 'index']);
     Route::get('orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show']);
     Route::put('orders/{order}/post', [\App\Http\Controllers\Admin\OrderController::class, 'post']);
+
+    // 轮播图管理
+    Route::put('slides/{slide}/seq', [\App\Http\Controllers\Admin\SlideController::class, 'seq']);
+    Route::apiResource('slides', \App\Http\Controllers\Admin\SlideController::class);
 });

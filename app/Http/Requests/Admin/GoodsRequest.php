@@ -53,11 +53,11 @@ class GoodsRequest extends BaseRequest
             'title.max' => '描述长度不能超过50个字符。',
             'price.integer' => '价格必须是数字。',
             'stock.integer' => '库存必须是数字。',
-            'price.min:0' => '价格最少为0.',
-            'stock.min:0' => '库存最少为0.',
+            'price.min' => '价格最少为0.',
+            'stock.min' => '库存最少为0.',
             'pics.array' => '图片集必须是数组。',
-            'status.in:0,1' => '销售状态只能包含0、1',
-            'recommend.in:0,1' => '推荐状态只能包含0、1',
+            'status.in' => '销售状态只能包含0、1',
+            'recommend.in' => '推荐状态只能包含0、1',
         ];
     }
 

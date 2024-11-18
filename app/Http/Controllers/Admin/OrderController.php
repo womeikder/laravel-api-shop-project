@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\CodeController;
 use App\Http\Controllers\MsgController;
+use App\Mail\OrderPost;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 
 class OrderController extends BaseController
@@ -90,6 +92,9 @@ class OrderController extends BaseController
             $order->express_no = $request->input('express_no');
             $order->status = 3;
             $order->save();
+
+            // 发货后邮件提醒
+            Mail::to($order->user)->queue(new OrderPost($order));
 
             return $this->successResponse(CodeController::SUCCESS_OK, MsgController::ORDER_POST_SUCCESS,null);
 
