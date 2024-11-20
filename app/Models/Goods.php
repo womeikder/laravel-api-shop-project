@@ -14,9 +14,17 @@ class Goods extends Model
     // 如果你还需要自定义创建时间戳字段，可以这样做
     const CREATED_AT = 'create_time';
 
+
+
     // 设置模型可填充的参数
     protected $fillable = ['user_id', 'goods_name', 'title', 'category_id', 'description', 'price', 'stock', 'cover', 'pics', 'status', 'recommend', 'detail'];
 
+    protected $appends = ['cover_url'];
+    // 仅返回封面图
+    public function getCoverUrlAttribute()
+    {
+        return oss_url($this->cover) ;
+    }
     /**
      * 强制转换数组
      * @var string[]

@@ -13,6 +13,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+
+Route::group(['prefix' => 'web'], function () {
+
+    // 首页的数据
+    Route::get('index', [\App\Http\Controllers\Web\IndexController::class, 'index']);
+
+    // 需要登陆验证的路由组
+    Route::group(['middleware' => 'api.auth'], function () {
+        // 个人中心
+        Route::get('user', [\App\Http\Controllers\Web\UserController::class, 'userInfo']);
+        Route::put('user', [\App\Http\Controllers\Web\UserController::class, 'userUpdate']);
+    });
 });

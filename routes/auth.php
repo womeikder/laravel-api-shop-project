@@ -28,6 +28,8 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('refresh', [\App\Http\Controllers\Auth\LoginController::class, 'refresh']);
         // 阿里云OSS Token
         Route::get('oss/token', [\App\Http\Controllers\Auth\OssController::class, 'token']);
+        // 修改密码
+        Route::put('password/update', [\App\Http\Controllers\Auth\PasswordController::class, 'updatePassword']);
     });
 
 });

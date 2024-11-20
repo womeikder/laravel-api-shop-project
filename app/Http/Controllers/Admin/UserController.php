@@ -9,6 +9,7 @@ use App\Http\Controllers\MsgController;
 use App\Http\Requests\Admin\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends BaseController
 {
@@ -86,6 +87,14 @@ class UserController extends BaseController
         $users->status = $users->status == 1 ? 0 : 1;
         $users->save();
         return $this->successResponse(CodeController::SUCCESS_OK, MsgController::USER_INFO_UPDATED_SUCCESS,null);
+
+    }
+
+
+    public function info()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::USER_INFO_FETCHED_SUCCESS, $user);
 
     }
 }

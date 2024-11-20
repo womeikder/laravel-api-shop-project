@@ -21,6 +21,6 @@ class RegisterController extends BaseController
         $user -> password = bcrypt($request -> input('password'));
         $user -> save();
         // 提交成功信息
-        return $this -> successResponse(CodeController::SUCCESS_OK, MsgController::REGISTER_SUCCESS, null);
+        return $this -> successResponse(CodeController::SUCCESS_CREATED, MsgController::REGISTER_SUCCESS, null);
     }
 }

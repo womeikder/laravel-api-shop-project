@@ -50,7 +50,6 @@ class LoginRequest extends BaseRequest
     public function failedValidation(Validator $validator)
     {
         $errorCodes = [
-            'email.email' => CodeController::CUSTOM_CODE_REGISTER_FAILED_ACCOUNT_EXISTS,
             'email.unique' => CodeController::CLIENT_ERROR_CONFLICT,
         ];
 
