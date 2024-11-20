@@ -16,12 +16,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['api.auth', 'bindings']], fu
 
     // 分类相关路由
     Route::put('category/{category}/status', [\App\Http\Controllers\Admin\CategoryController::class, 'status']);
+    Route::get('category/list', [\App\Http\Controllers\Admin\CategoryController::class, 'list']);
     Route::apiResource('category', \App\Http\Controllers\Admin\CategoryController::class)->except('destroy');
 
     // 商品相关路由
-    Route::put('goods/{goods}/status', [\App\Http\Controllers\Admin\GoodsController::class, 'status']);
-    Route::put('goods/{goods}/recommend', [\App\Http\Controllers\Admin\GoodsController::class, 'recommend']);
-    Route::apiResource('goods', \App\Http\Controllers\Admin\GoodsController::class)->except('destroy');
+    Route::apiResource('goods', \App\Http\Controllers\Admin\GoodsController::class);
 
     // 评论相关商品
     Route::get('comments', [\App\Http\Controllers\Admin\CommentController::class, 'index']);
@@ -42,4 +41,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['api.auth', 'bindings']], fu
 
     // 后台通知
     Route::apiResource('inform', \App\Http\Controllers\Admin\InformController::class);
+
+
 });

@@ -19,12 +19,6 @@ class Goods extends Model
     // 设置模型可填充的参数
     protected $fillable = ['user_id', 'goods_name', 'title', 'category_id', 'description', 'price', 'stock', 'cover', 'pics', 'status', 'recommend', 'detail'];
 
-    protected $appends = ['cover_url'];
-    // 仅返回封面图
-    public function getCoverUrlAttribute()
-    {
-        return oss_url($this->cover) ;
-    }
     /**
      * 强制转换数组
      * @var string[]
@@ -32,4 +26,15 @@ class Goods extends Model
     protected $casts = [
         'pics' => 'array'
     ];
+
+    // 在 Goods 模型中定义关系
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

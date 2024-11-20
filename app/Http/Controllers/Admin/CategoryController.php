@@ -17,12 +17,38 @@ class CategoryController extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::where('level',1)
-            ->with('children.children')
-            ->get();
-        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::CATEGORY_QUERY_SUCCESS, $categories);
+        // 获取分页的参数，设置合理的默认值
+        $perPage = (int) $request->input('per_page', 10);
+        $page = (int) $request->input('page', 1);
+        $status = $request->input('status');
+
+        // 构建基础的查询构建器实例，先查询一级分类（根据你原代码中where('level', 1)条件）
+        $query = Category::where('level', 1);
+        if ($status !== null) {
+            $query->where('status', $status);
+        }
+
+        try {
+            // 执行分页查询，通过with预加载关联的子分类（这里假设'children'是关联关系，且你需要加载多级子分类，所以写了'children.children'）
+            $categoriesPaginator = $query->with('children.children')
+                ->paginate($perPage, ['*'], 'page', $page);
+
+            // 返回成功响应，包含分页相关信息和处理后的分类数据
+            return $this->successResponse(CodeController::SUCCESS_OK, MsgController::CATEGORY_QUERY_SUCCESS, [
+                'current_page' => $categoriesPaginator->currentPage(),
+                'total' => $categoriesPaginator->total(),
+                'per_page' => $categoriesPaginator->perPage(),
+                'last_page' => $categoriesPaginator->lastPage(),
+                'data' => $categoriesPaginator->items()
+            ]);
+        } catch (\Exception $e) {
+            // 如果出现异常，记录日志（这里假设使用Laravel自带的日志功能，可根据实际情况调整）
+            \Log::error('分类分页查询出现异常: '. $e->getMessage());
+            // 返回错误响应，可根据实际情况自定义错误状态码和消息
+            return $this->errorResponse(CodeController::CLIENT_ERROR_BAD_REQUEST, '分类查询出现错误，请稍后再试');
+        }
     }
 
     /**
@@ -124,6 +150,24 @@ class CategoryController extends BaseController
         $data->status = $data->status === 1 ? 0 : 1;
         $data->save();
         return $this->successResponse(CodeController::SUCCESS_OK, MsgController::CATEGORY_UPDATED,null);
+    }
+
+    /**
+     * 列表
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function list()
+    {
+        $category = Category::all();
+        $res = $category->map(function ($category) {
+          return [
+            'id' => $category->id,
+            'name' => $category->name
+          ];
+        });
+
+        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::CATEGORY_QUERY_SUCCESS,$res);
+
     }
 
 }

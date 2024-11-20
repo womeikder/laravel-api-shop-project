@@ -20,64 +20,73 @@ class GoodsController extends BaseController
      */
     public function index(Request $request)
     {
-        // 获取分页的参数
-        $perPage = $request->input('per_page', 10);
-        $status = $request->input('status', false);
-        $recommend = $request->input('recommend', false);
+        // 获取分页参数
+        $page = $request->input('page', 1); // 默认第一页
+        $perPage = $request->input('per_page', 10); // 每页默认10条记录
+        $status = $request->input('status');
+        $recommend = $request->input('recommend');
         $category_id = $request->input('category_id');
         $goods_name = $request->input('goods_name');
 
-        // 条件分页查
-        $goods = Goods::when($status !== false, function ($query) use ($status) {
-            $query->where('status', $status);
-        })
-            ->when($recommend !== false, function ($query)  use ($recommend) {
-            $query->where('recommend', $recommend);
-        })
-            ->when($category_id, function ($query) use ($category_id) {
-            $query->where('category_id', $category_id);
-        })
-            ->when($goods_name, function ($query) use ($goods_name) {
-            $query->where('goods_name', 'like', '%'.$goods_name.'%');
-        })
-            ->paginate($perPage);
+        // 构建查询
+        $goodsQuery = Goods::with(['comments', 'category'])
+            ->when(!is_null($status), function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->when(!is_null($recommend), function ($query) use ($recommend) {
+                $query->where('recommend', $recommend);
+            })
+            ->when(!is_null($category_id), function ($query) use ($category_id) {
+                $query->where('category_id', $category_id);
+            })
+            ->when(!is_null($goods_name), function ($query) use ($goods_name) {
+                $query->where('goods_name', 'like', '%' . $goods_name . '%');
+            });
 
-        // 设置返回的的参数样式
-        $res = $goods->map(function ($goods) {
+        // 执行分页查询
+        $goodsPaginator = $goodsQuery->paginate($perPage, ['*'], 'page', $page);
 
-            $pics_url = [];
-            foreach ($goods->pics as $pic) {
-                array_push($pics_url, oss_url($pic));
-            }
+        // 如果请求的每页数量大于等于总记录数，则设置为总记录数
+        if ($perPage >= $goodsPaginator->total()) {
+            $goodsPaginator = $goodsQuery->paginate($goodsPaginator->total(), ['*'], 'page', 1);
+        }
 
-            $content_list = [];
-            $comment = Comment::where('goods_id',$goods->id)->get();
-            foreach ($comment as $item) {
-                array_push($content_list, $item);
-            }
+        // 设置返回的数据样式并保留分页信息
+        $formattedData = $goodsPaginator->getCollection()->transform(function ($goods) {
             return [
                 'id' => $goods->id,
                 'goods_name' => $goods->goods_name,
                 'title' => $goods->title,
                 'category_id' => $goods->category_id,
-                'category_name' => Category::find($goods->category_id)->name,
+                'category_name' => optional($goods->category)->name ?? '未分类',
                 'description' => $goods->description,
                 'price' => $goods->price,
                 'stock' => $goods->stock,
                 'cover' => $goods->cover,
-                'cover_url' => oss_url($goods->cover),
+                'cover_url' => $goods->cover,
                 'pics' => $goods->pics,
-                'pics_url' => $pics_url,
+                'pics_url' => $goods->pics,
                 'detail' => $goods->detail,
                 'status' => $goods->status,
                 'recommend' => $goods->recommend,
-                'comments' => $content_list,
+                'comments' => $goods->comments, // 直接使用预加载的 comments 关联
                 'create_time' => $goods->create_time,
                 'update_time' => $goods->update_time,
             ];
         });
 
-        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::PRODUCT_SEARCH_SUCCESS, $res);
+        // 返回分页信息和转换后的商品列表
+        return $this->successResponse(
+            CodeController::SUCCESS_OK,
+            MsgController::PRODUCT_SEARCH_SUCCESS,
+            [
+                'current_page' => $goodsPaginator->currentPage(),
+                'total' => $goodsPaginator->total(),
+                'per_page' => $goodsPaginator->perPage(),
+                'last_page' => $goodsPaginator->lastPage(),
+                'data' => $formattedData
+            ]
+        );
     }
 
     /**
@@ -139,29 +148,9 @@ class GoodsController extends BaseController
 
     }
 
-    /**
-     * 商品销售状态
-     * @param Goods $goods
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function status(Goods $goods)
+    public function destroy(Goods $good)
     {
-        $goods->status = $goods->status === 0 ? 1 : 0;
-        $goods->save();
-
-        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::PRODUCT_UPDATE_SUCCESS, null);
-    }
-
-    /**
-     * 商品是否条件
-     * @param Goods $goods
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function recommend(Goods $goods)
-    {
-        $goods->recommend = $goods->recommend === 0 ? 1 : 0;
-        $goods->save();
-
-        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::PRODUCT_UPDATE_SUCCESS, null);
+        $good->delete();
+        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::PRODUCT_DELETE_SUCCESS, null);
     }
 }

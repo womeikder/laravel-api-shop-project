@@ -83,8 +83,18 @@ class LoginController extends BaseController
     {
         $email = $request->input('email');
 
+        // 缓存键名
+        $code_interval = 'login_email_interval'.$email;
+
+        // 检查是否有该缓存
+        if (Cache::has($code_interval)) {
+            return $this->errorResponse(CodeController::CLIENT_ERROR_CONFLICT, MsgController::EMAIL_CODE_INTERVAL,null);
+        }
+
         // 发送邮件
         Mail::to($email)->send(new LoginCode());
+        // 设置60S的缓存
+        Cache::put($code_interval, true, 60);
 
         return $this->successResponse(CodeController::SUCCESS_OK, MsgController::EMAIL_SEND_SUCCESS , null);
     }

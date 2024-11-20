@@ -9,6 +9,9 @@ class MsgController extends Controller
     public const DATA_NOT_EXIST = '查询数据不存在。';
     public const EMAIL_SEND_SUCCESS = '邮件已发送';
     public const EMAIL_CODE_ERROR = '邮箱验证码错误';
+    public const EMAIL_CODE_INTERVAL = '验证码发送过快,请等待上次发送60S后再试';
+    public const IMAGE_UPLOAD_SUCCESS = '图片上传成功';
+    public const IMAGE_UPLOAD_ERROR = '图片上传失败';
     // 验证相关
     public const ID_MUST_DELIVERY = '主键ID为必传参数';
     // 登录相关
@@ -35,6 +38,7 @@ class MsgController extends Controller
     public const PRODUCT_ADDED_TO_CART_FAILED = '商品添加到购物车失败，请检查商品库存或网络连接。';
     public const PRODUCT_CREATE_SUCCESS = '商品创建成功。';
     public const PRODUCT_UPDATE_SUCCESS = '商品更新成功。';
+    public const PRODUCT_DELETE_SUCCESS = '商品删除成功。';
 
     // 购物车相关
     public const CART_INFO_FETCH_SUCCESS = '已成功获取您的购物车信息。';

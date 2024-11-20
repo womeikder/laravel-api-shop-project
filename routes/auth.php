@@ -36,6 +36,8 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('email/code',[\App\Http\Controllers\Auth\BindController::class, 'codeEmail']);
         // 更新邮箱
         Route::put('email/update',[\App\Http\Controllers\Auth\BindController::class, 'updateEmail']);
+        // 更新当前用户信息
+        Route::put('current/update',[\App\Http\Controllers\Auth\BindController::class, 'update']);
     });
 
 });
