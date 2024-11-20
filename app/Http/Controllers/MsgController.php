@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 class MsgController extends Controller
 {
     public const DATA_NOT_EXIST = '查询数据不存在。';
+    public const EMAIL_SEND_SUCCESS = '邮件已发送';
+    public const EMAIL_CODE_ERROR = '邮箱验证码错误';
     // 验证相关
     public const ID_MUST_DELIVERY = '主键ID为必传参数';
     // 登录相关
@@ -80,4 +82,11 @@ class MsgController extends Controller
     public const MENU_QUERY_SUCCESS = '菜单查询成功。';
     public const MENU_CREATE_SUCCESS = '菜单创建成功.';
     public const MENU_UPDATED = '菜单数据已更新。';
+
+    // 通知相关
+    public const INFORM_QUERY_SUCCESS = '通知查询成功。';
+    public const INFORM_CREATE_SUCCESS = '通知创建成功.';
+    public const INFORM_UPDATED = '通知数据已更新。';
+    public const INFORM_DELETED_SUCCESS = '通知已删除。';
+    public const INFORM_UNAUTHORIZED = '用户未授权，不可修改他人发布的通知。';
 }

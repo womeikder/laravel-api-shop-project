@@ -39,4 +39,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['api.auth', 'bindings']], fu
 
     // 菜单管理
     Route::apiResource('menus', \App\Http\Controllers\Admin\MenuController::class)->except('show','destroy');
+
+    // 后台通知
+    Route::apiResource('inform', \App\Http\Controllers\Admin\InformController::class);
 });

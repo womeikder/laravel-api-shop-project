@@ -19,6 +19,8 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('register', [\App\Http\Controllers\Auth\RegisterController::class, 'store']);
     // 登录
     Route::post('login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
+    // 获取验证码
+    Route::post('login/code', [\App\Http\Controllers\Auth\LoginController::class, 'code']);
 
     // 需要登陆验证的路由组
     Route::group(['middleware' => 'api.auth'], function () {
@@ -30,6 +32,10 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('oss/token', [\App\Http\Controllers\Auth\OssController::class, 'token']);
         // 修改密码
         Route::put('password/update', [\App\Http\Controllers\Auth\PasswordController::class, 'updatePassword']);
+        // 发送邮箱验证码
+        Route::get('email/code',[\App\Http\Controllers\Auth\BindController::class, 'codeEmail']);
+        // 更新邮箱
+        Route::put('email/update',[\App\Http\Controllers\Auth\BindController::class, 'updateEmail']);
     });
 
 });
