@@ -74,4 +74,9 @@ class MsgController extends Controller
     public const SLIDE_QUERY_SUCCESS = '轮播图查询成功。';
     public const SLIDE_UPDATE_SUCCESS = '轮播图更新成功。';
     public const SLIDE_DELETED_SUCCESS = '轮播图已删除。';
+
+    // 菜单相关
+    public const MENU_QUERY_SUCCESS = '菜单查询成功。';
+    public const MENU_CREATE_SUCCESS = '菜单创建成功.';
+    public const MENU_UPDATED = '菜单数据已更新。';
 }

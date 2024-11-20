@@ -35,4 +35,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['api.auth', 'bindings']], fu
     // 轮播图管理
     Route::put('slides/{slide}/seq', [\App\Http\Controllers\Admin\SlideController::class, 'seq']);
     Route::apiResource('slides', \App\Http\Controllers\Admin\SlideController::class);
+
+    // 菜单管理
+    Route::apiResource('menus', \App\Http\Controllers\Admin\MenuController::class)->except('show','destroy');
 });
