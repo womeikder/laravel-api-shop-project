@@ -14,13 +14,13 @@ class RegisterController extends BaseController
 {
     public function store(RegisterRequest $request)
     {
-
-            $user = new User();
-            $user -> name = $request -> input('name');
-            $user -> email = $request -> input('email');
-            $user -> password = bcrypt($request -> input('password'));
-            $user -> save();
-            // 提交成功信息
-            return $this -> successResponse(CodeController::SUCCESS_OK, MsgController::CATEGORY_CREATE_SUCCESS, null);
+        $user = new User();
+        $user -> status = $request -> input('status', 1);
+        $user -> name = $request -> input('name');
+        $user -> email = $request -> input('email');
+        $user -> password = bcrypt($request -> input('password'));
+        $user -> save();
+        // 提交成功信息
+        return $this -> successResponse(CodeController::SUCCESS_OK, MsgController::REGISTER_SUCCESS, null);
     }
 }

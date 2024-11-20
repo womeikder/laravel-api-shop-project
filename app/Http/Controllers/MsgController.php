@@ -15,6 +15,7 @@ class MsgController extends Controller
     public const LOGIN_FAILED_ACCOUNT_DISABLED = '该账号已被停用，请联系客服。';
     public const LOGOUT_SUCCESS = '退出登录成功';
     public const ERROR_UNAUTHORIZED = '用户未授权，未提供有效登录凭证(token)';
+    public const LOGIN_ERROR = '登录失败、请检查邮箱或密码后重试!';
 
     // 注册相关
     public const REGISTER_SUCCESS = '注册成功，您可以使用新账号登录了。';

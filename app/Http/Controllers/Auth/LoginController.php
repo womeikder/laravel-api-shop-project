@@ -24,7 +24,7 @@ class LoginController extends BaseController
         // 通过jwt来验证请求数据，并且得到token
         if (!$token = auth('api') -> attempt($request)) {
             // 没有通过验证
-            return $this->errorResponse(CodeController::CLIENT_ERROR_BAD_REQUEST, MsgController::ERROR_UNAUTHORIZED, null);
+            return $this->errorResponse(CodeController::CLIENT_ERROR_BAD_REQUEST, MsgController::LOGIN_ERROR, null);
         }
         // 检查用户的状态
         $user = auth('api')->user();

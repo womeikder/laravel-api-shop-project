@@ -19,7 +19,7 @@ class RegisterRequest extends BaseRequest
         return [
             'name' => 'required|max:16|min:4',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|max:16|regex:/^(?=.*[a-z])(?=.*\d).+$/',
+            'password' => 'required|min:6|regex:/^(?=.*[a-z])(?=.*\d).+$/',
         ];
     }
 

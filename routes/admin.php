@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'admin', 'middleware' => ['api.auth', 'bindings']], function () {
 
     // 用户相关路由
-    Route::put('user/{user}/lock', [\App\Http\Controllers\Admin\UserController::class, 'lock']);
+    Route::put('user/{user}/lock', [\App\Http\Controllers\Admin\UserController::class, 'lock'])->name('users.lock');
     Route::apiResource('user', \App\Http\Controllers\Admin\UserController::class)->only('index','show');
 
     // 分类相关路由
