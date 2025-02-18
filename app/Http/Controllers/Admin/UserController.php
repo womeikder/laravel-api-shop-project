@@ -25,29 +25,49 @@ class UserController extends BaseController
         $name = $request->input('name');
         $email = $request->input('email');
         $perPage = $request->input('per_page',10);
+        $page = $request->input('page',1);
 
         // 首先进行模糊查询，然后进行分页的处理
-        $users = User::when($name, function ($query) use ($name) {
+        $usersQuery = User::when(!is_null($name), function ($query) use ($name) {
             $query->where('name', 'like','%'.$name.'%');
         })
-            ->when($email, function ($query) use ($email) {
+            ->when(!is_null($email), function ($query) use ($email) {
                 $query->where('email', 'like', '%'.$email.'%');
-            })
-            ->paginate($perPage);
+            });
+        $usersPaginator = $usersQuery->paginate($perPage, ['*'], 'page', $page);
+        // 如果请求的每页数量大于等于总记录数，则设置为总记录数
+        if ($perPage >= $usersPaginator->total()) {
+            $usersPaginator = $usersQuery->paginate($usersPaginator->total(), ['*'], 'page', 1);
+        }
 
         // 设置返回的的参数
-        $res = $users->map(function ($user) {
+        $res = $usersPaginator->map(function ($user) {
            return [
-             'id' => $user->id,
-             'name' => $user->name,
-             'email' => $user->email,
-             'create_time' => $user->create_time,
-             'update_time' => $user->update_time,
-             'status' => $user->status
+               'id' => $user->id,
+               'name' => $user->name,
+               'email' => $user->email,
+               'status' => $user->status,
+               'phone' => $user->phone,
+               'avatar' => $user->avatar,
+               'gender' => $user->gender,
+               'create_time' => $user->create_time,
+               'update_time' => $user->update_time,
+
            ];
         });
 
-        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::USER_INFO_FETCHED_SUCCESS, $res);
+        // 返回分页信息和转换后的商品列表
+        return $this->successResponse(
+            CodeController::SUCCESS_OK,
+            MsgController::USER_INFO_FETCHED_SUCCESS,
+            [
+                'current_page' => $usersPaginator->currentPage(),
+                'total' => $usersPaginator->total(),
+                'per_page' => $usersPaginator->perPage(),
+                'last_page' => $usersPaginator->lastPage(),
+                'data' => $res
+            ]
+        );
     }
 
 
@@ -59,8 +79,7 @@ class UserController extends BaseController
     public function show($user)
     {
         // 查询用户信息
-        $users = User::select('id','name','email','create_time','update_time', 'status')
-            ->where('id',$user)
+        $users = User::where('id',$user)
             ->get();
 
         if ($users->isEmpty()) {
@@ -95,6 +114,15 @@ class UserController extends BaseController
     {
         $user = JWTAuth::parseToken()->authenticate();
         return $this->successResponse(CodeController::SUCCESS_OK, MsgController::USER_INFO_FETCHED_SUCCESS, $user);
+
+    }
+
+    public function destroy(User $user)
+    {
+       $user->delete();
+
+        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::USER_INFO_UPDATED_SUCCESS, null);
+
 
     }
 }

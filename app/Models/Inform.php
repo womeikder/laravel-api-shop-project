@@ -14,4 +14,9 @@ class Inform extends Model
 
     // 如果你还需要自定义创建时间戳字段，可以这样做
     const CREATED_AT = 'create_time';
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

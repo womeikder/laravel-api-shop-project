@@ -15,6 +15,10 @@ class Order extends Model
     // 如果你还需要自定义创建时间戳字段，可以这样做
     const CREATED_AT = 'create_time';
 
+
+
+    protected $fillable = ['user_id', 'order_no', 'amount', 'address', 'expire_time', 'status'];
+
     /**
      * 关联用户表
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

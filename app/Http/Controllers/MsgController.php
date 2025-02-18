@@ -54,8 +54,9 @@ class MsgController extends Controller
     public const ORDER_QUERIED_SUCCESS = '已成功获取您的订单信息。';
     public const ORDER_QUERIED_FAILED = '订单查询失败，请稍后再试。';
     public const ORDER_PAID_SUCCESS = '订单支付成功，感谢您的购买！';
-    public const ORDER_PAID_FAILED = '订单支付失败，请检查支付方式或联系客服。';
     public const ORDER_POST_SUCCESS = '发货信息已更新';
+    public const ORDER_PAID_ERROR = '订单支付失败，该订单已经支付，请勿重复支付。';
+    public const ORDER_EXPIRE = '长时间未支付,订单已过期，请重新下单';
 
     // 用户信息相关
     public const USER_INFO_FETCHED_SUCCESS = '已成功获取用户信息。';
@@ -64,6 +65,7 @@ class MsgController extends Controller
     public const USER_INFO_UPDATED_FAILED = '更新用户信息失败，请检查输入内容。';
     public const USER_TOKEN_REFRESH = 'Token信息已刷新';
     public const USER_NOT_EXIST = '用户不存在';
+    public const USER_ADDRESS = '用户收货地址';
 
     // 分类相关
     public const CATEGORY_CREATE_SUCCESS = '分类创建成功.';

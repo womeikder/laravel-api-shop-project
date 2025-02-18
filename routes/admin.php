@@ -12,7 +12,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['api.auth', 'bindings']], fu
     // 用户相关路由
     Route::get('user/info', [\App\Http\Controllers\Admin\UserController::class, 'info'])->name('users.info');
     Route::put('user/{user}/lock', [\App\Http\Controllers\Admin\UserController::class, 'lock'])->name('users.lock');
-    Route::apiResource('user', \App\Http\Controllers\Admin\UserController::class)->only('index','show');
+    Route::apiResource('user', \App\Http\Controllers\Admin\UserController::class)->only('index','show', 'destroy');
 
     // 分类相关路由
     Route::put('category/{category}/status', [\App\Http\Controllers\Admin\CategoryController::class, 'status']);
@@ -33,7 +33,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['api.auth', 'bindings']], fu
     Route::put('orders/{order}/post', [\App\Http\Controllers\Admin\OrderController::class, 'post']);
 
     // 轮播图管理
-    Route::put('slides/{slide}/seq', [\App\Http\Controllers\Admin\SlideController::class, 'seq']);
+    Route::put('slides/seq', [\App\Http\Controllers\Admin\SlideController::class, 'seq']);
     Route::apiResource('slides', \App\Http\Controllers\Admin\SlideController::class);
 
     // 菜单管理
@@ -41,6 +41,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['api.auth', 'bindings']], fu
 
     // 后台通知
     Route::apiResource('inform', \App\Http\Controllers\Admin\InformController::class);
+
+    // 系统统计
+    Route::get('statistics/index', [\App\Http\Controllers\Admin\StatisticsController::class, 'index']);
+    Route::post('statistics/view', [\App\Http\Controllers\Admin\StatisticsController::class, 'view']);
 
 
 });

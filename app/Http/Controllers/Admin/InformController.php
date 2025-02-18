@@ -23,7 +23,9 @@ class InformController extends BaseController
             return [
                 'id' => $inform->id,
                 'title' => $inform->title,
-                'time' => $inform->update_time
+                'time' => $inform->update_time,
+                'content' => $inform->content,
+                'user' => $inform->user
             ];
         });
         return $this->successResponse(CodeController::SUCCESS_OK, MsgController::INFORM_QUERY_SUCCESS, $res);

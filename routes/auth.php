@@ -38,6 +38,8 @@ Route::group(['prefix' => 'auth'], function () {
         Route::put('email/update',[\App\Http\Controllers\Auth\BindController::class, 'updateEmail']);
         // 更新当前用户信息
         Route::put('current/update',[\App\Http\Controllers\Auth\BindController::class, 'update']);
+        // 判断当前用户是否为管理员
+        Route::get('check/admin', [\App\Http\Controllers\Auth\LoginController::class, 'checkAdmin']);
     });
 
 });

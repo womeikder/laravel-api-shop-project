@@ -22,6 +22,7 @@ class LoginRequest extends BaseRequest
             'email' => 'required|email',
             'password' => 'required|min:6|regex:/^(?=.*[a-z])(?=.*\d).+$/',
             'code' => 'required',
+            'type' => 'required'
         ];
     }
 
@@ -40,6 +41,7 @@ class LoginRequest extends BaseRequest
             'password.max' => '密码长度不能超过16个字符。',
             'password.regex' => '密码必须包含小写字母和数字。',
             'code.required' => '验证码是必填项。',
+            'type.required' => '登录类型是必填项。',
         ];
     }
 

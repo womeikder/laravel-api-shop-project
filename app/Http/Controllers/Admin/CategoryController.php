@@ -91,11 +91,8 @@ class CategoryController extends BaseController
      */
     public function show($category)
     {
-        $data = Category::select()->where('id', $category)->get();
-        if ($data->isEmpty()) {
-            return $this->errorResponse(CodeController::CLIENT_ERROR_BAD_REQUEST, MsgController::CATEGORY_NOT_EXIST,null);
-        }
-        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::CATEGORY_QUERY_SUCCESS, $data);
+        $category = Category::where('id', $category)->with('children.children')->get();
+        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::CATEGORY_QUERY_SUCCESS, $category);
     }
 
     /**

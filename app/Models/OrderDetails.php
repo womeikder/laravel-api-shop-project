@@ -15,6 +15,9 @@ class OrderDetails extends Model
     // 如果你还需要自定义创建时间戳字段，可以这样做
     const CREATED_AT = 'create_time';
 
+    // 可批量赋值的字段
+    protected $fillable = ['order_id', 'goods_id', 'price', 'number'];
+
     /**
      * 所属订单
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

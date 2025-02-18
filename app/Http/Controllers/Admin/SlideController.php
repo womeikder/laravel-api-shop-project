@@ -23,7 +23,9 @@ class SlideController extends BaseController
         $res = Slide::when($size, function ($query) use ($size) {
             $query->limit($size);
         })
-            ->where('status', 1)->get();
+            ->where('status', 1)
+            ->orderBy('seq', 'asc')
+            ->get();
 
         if ($res->isEmpty()) {
             return $this->errorResponse(CodeController::CLIENT_ERROR_BAD_REQUEST, MsgController::DATA_NOT_EXIST, null);
@@ -43,9 +45,10 @@ class SlideController extends BaseController
         $seq++;
 
         $request->offsetSet('seq', $seq);
+        $request->offsetSet('url', $seq);
         Slide::create($request->all());
 
-        return $this->successResponse(CodeController::SUCCESS_CREATED, MsgController::SLIDE_CREATED, null);
+        return $this->successResponse(CodeController::SUCCESS_CREATED, MsgController::SLIDE_CREATED, $request);
     }
 
     /**
@@ -87,22 +90,33 @@ class SlideController extends BaseController
      * @param Slide $slide
      * @return \Illuminate\Http\JsonResponse
      */
-    public function seq(Request $request, Slide $slide)
+        public function seq(Request $request)
     {
-        try {
-            $request->validate([
-                'seq' => 'required|integer'
-            ], [
-                'seq.required' => '排序必填。',
-                'seq.integer' => '必须是数字。'
-            ]);
-            $slide->seq = $request->input('seq');
-            $slide->save();
-            return $this->successResponse(CodeController::SUCCESS_OK, MsgController::SLIDE_UPDATE_SUCCESS, null);
-        } catch (\Exception $e) {
-            return $this->errorResponse(CodeController::CLIENT_ERROR_BAD_REQUEST, $e->getMessage(), null);
+        // 从前端请求中获取 id
+        $id = $request->input('id');
+
+        // 验证 id 是否存在
+        if (!$id) {
+            return $this->errorResponse(CodeController::CLIENT_ERROR_BAD_REQUEST, MsgController::DATA_NOT_EXIST, 'ID is required');
         }
 
+        // 查找对应的 Slide 记录
+        $slide = Slide::find($id);
+        if (!$slide) {
+            return $this->errorResponse(CodeController::CLIENT_ERROR_BAD_REQUEST, MsgController::DATA_NOT_EXIST);
+        }
 
+        // 找出当前前五名的 Slide 记录中最大的 seq 值
+        $topFiveMaxSeq = Slide::where('id', '!=', $id)
+            ->orderBy('seq', 'asc')
+            ->offset(5)
+            ->value('seq');
+
+        $newSeq = $topFiveMaxSeq? $topFiveMaxSeq - 1 : 1;
+
+        // 更新 Slide 的 seq 属性
+        $slide->update(['seq' => $newSeq]);
+
+        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::SLIDE_UPDATE_SUCCESS, null);
     }
 }

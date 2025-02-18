@@ -16,6 +16,14 @@ class Comment extends Model
     const CREATED_AT = 'create_time';
 
     /**
+     * 强制转换数组
+     * @var string[]
+     */
+    protected $casts = [
+        'pics' => 'array'
+    ];
+
+    /**
      * 评论所属的用户
      */
     public function user()

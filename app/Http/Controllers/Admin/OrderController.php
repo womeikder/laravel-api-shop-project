@@ -120,7 +120,7 @@ class OrderController extends BaseController
             $order->save();
 
             // 发货后邮件提醒
-            Mail::to($order->user)->queue(new OrderPost($order));
+//            Mail::to($order->user)->queue(new OrderPost($order));
 
             return $this->successResponse(CodeController::SUCCESS_OK, MsgController::ORDER_POST_SUCCESS,null);
 
@@ -128,4 +128,6 @@ class OrderController extends BaseController
             return $this->errorResponse(CodeController::CLIENT_ERROR_BAD_REQUEST, $e->getMessage(), null);
         }
     }
+
+
 }

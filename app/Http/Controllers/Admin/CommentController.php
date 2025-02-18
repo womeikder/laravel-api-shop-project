@@ -19,24 +19,57 @@ class  CommentController extends BaseController
     public function index(Request $request)
     {
         // 获取分页的参数
+        $page = $request->input('page', 1);
         $perPage = $request->input('per_page', 10);
         $rate = $request->input('rate');
         $user_id = $request->input('user_id');
         $goods_name = $request->input('goods_name');
 
+//        dd(Comment::all());
         // 条件分页查
-        $comment = Comment::when($rate, function ($query) use ($rate) {
-            $query->where('rate', $rate);
-        })
-            ->when($user_id !== false, function ($query)  use ($user_id) {
+        $commentQuery = Comment::when(!is_null($rate), function ($query) use ($rate) {
+                $query->where('rate', $rate);
+            })
+            ->when(!is_null($user_id) !== false, function ($query)  use ($user_id) {
                 $query->where('user_id', $user_id);
             })
-            ->when($goods_name, function ($query) use ($goods_name) {
+            ->when(!is_null($goods_name), function ($query) use ($goods_name) {
                 $goods_ids = Goods::where('goods_name', 'like', '%'.$goods_name.'%');
                 $query->where('goods_id', $goods_ids);
-            })
-            ->paginate($perPage);
-        return $this->successResponse(CodeController::SUCCESS_OK, MsgController::COMMENT_QUERY_SUCCESS, $comment);
+            });
+        $commentPaginator = $commentQuery->paginate($perPage, ['*'], 'page', $page);
+        // 如果请求的每页数量大于等于总记录数，则设置为总记录数
+        if ($perPage >= $commentPaginator->total()) {
+            $commentPaginator = $commentQuery->paginate($commentPaginator->total(), ['*'], 'page', 1);
+        }
+
+        // 设置返回的数据样式并保留分页信息
+        $formattedData = $commentPaginator->map(function ($comment) {
+            return [
+                'id' => $comment->id,
+                'user' => $comment->user,
+                'goods' => $comment->goods,
+                'rate' => $comment->rate,
+                'content' => $comment->content,
+                'reply' => $comment->reply,
+                'pics' => $comment->pics,
+                'create_time' => $comment->create_time,
+                'update_time' => $comment->update_time,
+            ];
+        });
+
+        // 返回分页信息和转换后的商品列表
+        return $this->successResponse(
+            CodeController::SUCCESS_OK,
+            MsgController::PRODUCT_SEARCH_SUCCESS,
+            [
+                'current_page' => $commentPaginator->currentPage(),
+                'total' => $commentPaginator->total(),
+                'per_page' => $commentPaginator->perPage(),
+                'last_page' => $commentPaginator->lastPage(),
+                'data' => $formattedData
+            ]
+        );
     }
 
     /**
